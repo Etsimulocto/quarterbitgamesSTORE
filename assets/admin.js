@@ -219,6 +219,170 @@
     $('#photo-files').value = '';
   }
 
+
+  const orderStoreKey = 'bloomcore-market-orders-v1';
+  const orderState = { orders: [], selectedId: null };
+  const orderStatusLabel = (status) => ({
+    'awaiting-shipping':'WAITING FOR SHIPPING', 'ready-to-invoice':'READY TO INVOICE',
+    invoiced:'INVOICED', paid:'PAID', shipped:'SHIPPED'
+  }[status] || 'WAITING FOR SHIPPING');
+  const money = (value) => `${Number(value || 0).toFixed(2)}`;
+  function nextOrderRef() {
+    const now = new Date();
+    const date = [now.getFullYear(), String(now.getMonth()+1).padStart(2,'0'), String(now.getDate()).padStart(2,'0')].join('');
+    return `BC-${date}-${Math.random().toString(36).slice(2,6).toUpperCase()}`;
+  }
+  function loadOrders() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(orderStoreKey) || '[]');
+      orderState.orders = Array.isArray(saved) ? saved : [];
+    } catch (error) {
+      orderState.orders = [];
+      $('#order-state').textContent = 'Could not read local order records in this browser.';
+    }
+  }
+  function orderFormValue() {
+    return {
+      id: $('#order-ref').value.trim(),
+      buyer: $('#order-buyer').value.trim(),
+      email: $('#order-email').value.trim(),
+      items: $('#order-items').value.trim(),
+      subtotal: Number($('#order-subtotal').value),
+      shipping: $('#order-shipping').value === '' ? null : Number($('#order-shipping').value),
+      status: $('#order-status').value,
+      updatedAt: new Date().toISOString()
+    };
+  }
+  function updateOrderTotal() {
+    const subtotal = Number($('#order-subtotal').value || 0);
+    const shippingRaw = $('#order-shipping').value;
+    const total = subtotal + Number(shippingRaw || 0);
+    $('#order-total').textContent = money(total);
+    const ready = shippingRaw !== '' && Number.isFinite(subtotal) && Number.isFinite(Number(shippingRaw));
+    $('#copy-invoice').disabled = !ready;
+    $('#order-total-note').textContent = ready
+      ? 'Shipping is included. Copy the details, then review the invoice in PayPal before sending.'
+      : 'Enter the actual shipping amount before preparing the invoice.';
+  }
+  function renderOrders() {
+    const body = $('#order-rows');
+    body.innerHTML = '';
+    const sorted = [...orderState.orders].sort((a,b) => String(b.updatedAt || '').localeCompare(String(a.updatedAt || '')));
+    if (!sorted.length) {
+      const row = document.createElement('tr'); const cell = document.createElement('td');
+      cell.colSpan = 5; cell.textContent = 'No orders logged yet. Add one when an order comes in.';
+      row.append(cell); body.append(row); return;
+    }
+    sorted.forEach((order) => {
+      const row = document.createElement('tr');
+      [order.id, order.buyer || order.email || '—', orderStatusLabel(order.status), order.shipping == null ? 'Shipping pending' : money(Number(order.subtotal) + Number(order.shipping))]
+        .forEach((value) => { const cell=document.createElement('td'); cell.textContent=value; row.append(cell); });
+      const action=document.createElement('td'); const button=document.createElement('button');
+      button.type='button'; button.className='order-edit-button'; button.textContent='OPEN';
+      button.addEventListener('click', () => selectOrder(order.id));
+      action.append(button); row.append(action); body.append(row);
+    });
+  }
+  function selectOrder(id) {
+    const order = orderState.orders.find((record) => record.id === id);
+    if (!order) return;
+    orderState.selectedId = id;
+    $('#order-ref').value = order.id;
+    $('#order-buyer').value = order.buyer || '';
+    $('#order-email').value = order.email || '';
+    $('#order-items').value = order.items || '';
+    $('#order-subtotal').value = order.subtotal ?? '';
+    $('#order-shipping').value = order.shipping ?? '';
+    $('#order-status').value = order.status || 'awaiting-shipping';
+    $('#delete-order').disabled = false;
+    $('#order-state').textContent = `Editing ${id}. Order details are stored only in this browser.`;
+    updateOrderTotal();
+  }
+  function resetOrder() {
+    orderState.selectedId = null;
+    $('#order-form').reset();
+    $('#order-ref').value = nextOrderRef();
+    $('#order-status').value = 'awaiting-shipping';
+    $('#delete-order').disabled = true;
+    $('#invoice-copy-text').value = '';
+    $('#order-state').textContent = 'New order. Buyer and order information stays in this browser.';
+    updateOrderTotal();
+  }
+  function invoiceText(order) {
+    return [
+      'Bloomcore Market · PayPal invoice',
+      `Order reference: ${order.id}`,
+      `Buyer: ${order.buyer || '(add buyer name in PayPal)'}`,
+      `Buyer email: ${order.email || '(enter buyer email in PayPal)'}`,
+      `Items: ${order.items}`,
+      `Items subtotal: ${money(order.subtotal)}`,
+      `Shipping: ${money(order.shipping)}`,
+      `TOTAL DUE: ${money(Number(order.subtotal) + Number(order.shipping))}`
+    ].join('\\n');
+  }
+  $('#order-form').addEventListener('submit', (event) => {
+    event.preventDefault();
+    const order = orderFormValue();
+    if (!order.id || !order.items || !Number.isFinite(order.subtotal) || order.subtotal < 0) {
+      $('#order-state').textContent = 'Add an order reference, item summary, and valid item subtotal.';
+      return;
+    }
+    if (order.shipping !== null && (!Number.isFinite(order.shipping) || order.shipping < 0)) {
+      $('#order-state').textContent = 'Shipping must be zero or a positive amount.';
+      return;
+    }
+    if (order.shipping !== null && order.status === 'awaiting-shipping') order.status = 'ready-to-invoice';
+    const existing = orderState.orders.findIndex((record) => record.id === orderState.selectedId);
+    if (existing >= 0) orderState.orders[existing] = order;
+    else if (orderState.orders.some((record) => record.id.toLowerCase() === order.id.toLowerCase())) {
+      $('#order-state').textContent = 'That order reference already exists. Open it from the queue to edit it.';
+      return;
+    } else orderState.orders.push(order);
+    orderState.selectedId = order.id;
+    try {
+      localStorage.setItem(orderStoreKey, JSON.stringify(orderState.orders));
+      $('#order-status').value = order.status;
+      $('#delete-order').disabled = false;
+      $('#order-state').textContent = order.shipping === null
+        ? `Saved ${order.id}. Add the shipping charge when you know it; the invoice copy button will become available.`
+        : `Saved ${order.id}. Total due: ${money(order.subtotal + order.shipping)}. Review and send the invoice in PayPal.`;
+      renderOrders(); updateOrderTotal();
+    } catch (error) {
+      $('#order-state').textContent = 'Browser storage could not save this order. Check browser storage settings.';
+    }
+  });
+  $('#order-subtotal').addEventListener('input', updateOrderTotal);
+  $('#order-shipping').addEventListener('input', updateOrderTotal);
+  $('#order-status').addEventListener('change', () => {
+    const order = orderState.orders.find((record) => record.id === orderState.selectedId);
+    if (order) { order.status = $('#order-status').value; order.updatedAt = new Date().toISOString(); }
+  });
+  $('#copy-invoice').addEventListener('click', async () => {
+    const order = orderFormValue();
+    if (order.shipping === null) { $('#order-state').textContent = 'Enter shipping first so the invoice includes the full total.'; return; }
+    if (!order.id || !order.items || !Number.isFinite(order.subtotal)) { $('#order-state').textContent = 'Save the order details before preparing the invoice.'; return; }
+    const text = invoiceText(order);
+    $('#invoice-copy-text').value = text;
+    try {
+      await navigator.clipboard.writeText(text);
+      $('#order-state').textContent = 'Invoice details copied. Open PayPal, enter/review the buyer and amounts, then send the invoice there.';
+    } catch (error) {
+      $('#invoice-copy-text').focus(); $('#invoice-copy-text').select();
+      $('#order-state').textContent = 'Select and copy the invoice details below, then paste them into PayPal and review before sending.';
+    }
+  });
+  $('#new-order').addEventListener('click', resetOrder);
+  $('#delete-order').addEventListener('click', () => {
+    if (!orderState.selectedId) return;
+    orderState.orders = orderState.orders.filter((record) => record.id !== orderState.selectedId);
+    try {
+      localStorage.setItem(orderStoreKey, JSON.stringify(orderState.orders));
+      renderOrders(); resetOrder();
+      $('#order-state').textContent = 'Order removed from this browser.';
+    } catch (error) { $('#order-state').textContent = 'Could not update browser order storage.'; }
+  });
+  loadOrders(); renderOrders(); resetOrder();
+
   $('#connect-folder').addEventListener('click', connect);
   $('#reload-catalog').addEventListener('click', loadCatalog);
   $('#scan-photos').addEventListener('click', scanPhotos);
