@@ -48,6 +48,7 @@
       renderRows();
       await scanPhotos();
       $('#edit-state').textContent = `Loaded ${state.items.length} listing(s). Select any photo below to edit its listing.`;
+      await loadStoreCopyFromFolder();
     } catch (error) {
       renderRows();
       const selectedName = state.root?.name || 'selected folder';
@@ -391,6 +392,69 @@
     } catch (error) { $('#order-state').textContent = 'Could not update browser order storage.'; }
   });
   loadOrders(); renderOrders(); resetOrder();
+  previewStoreCopy();
+
+
+  const storeCopyDefaults = {
+  "eyebrow": "MADE ONE AT A TIME",
+  "heading": "Made by hand.",
+  "headingAccent": "Shipped with care.",
+  "intro": "Each piece is made individually in the Bloomcore workshop. Here’s what to expect when you order.",
+  "turnaroundTitle": "One at a time",
+  "turnaroundBody": "I make each piece individually, so it may take up to 3 days before I get to your order. Once I know the shipping amount, I’ll send a PayPal invoice for the item total plus shipping.",
+  "careTitle": "Care & finish",
+  "careBody": "Butcher-block stain works nicely. Wipe clean with a damp cloth. Freshly finished wood may smell a little funny at first; that smell fades as it airs out.",
+  "multiTitle": "Ordering a few",
+  "multiBody": "Ask about a multi-item discount. It depends on how the pieces fit on each sheet, and combining a few light items can make shipping more worthwhile.",
+  "artTitle": "Custom screen art",
+  "artBody": "Have an image in mind? Simple custom art based on an image you supply may be added for a small fee. Ask first so we can confirm the fit and cost.",
+  "sizesTitle": "Custom rack sizes",
+  "sizesBody": "Custom screen sizes are available for rack builds. More sizes and options are coming soon."
+};
+  const storeCopyKeys = Object.keys(storeCopyDefaults);
+  function applyStoreCopy(copy, note) {
+    storeCopyKeys.forEach((key) => {
+      const field = document.querySelector(`#copy-${key}`);
+      if (field) field.value = typeof copy[key] === 'string' ? copy[key] : storeCopyDefaults[key];
+    });
+    $('#store-copy-state').textContent = note;
+  }
+  async function previewStoreCopy() {
+    try {
+      const response = await fetch('./data/store-content.json');
+      if (!response.ok) throw new Error('Using starter copy.');
+      applyStoreCopy(await response.json(), 'Store copy loaded for preview. Connect the repo folder to save changes.');
+    } catch (error) {
+      applyStoreCopy(storeCopyDefaults, 'Starter copy loaded. Connect the repo folder to save changes.');
+    }
+  }
+  async function loadStoreCopyFromFolder() {
+    if (!state.root) return;
+    try {
+      const dir = await subdir(state.root, 'data');
+      const handle = await dir.getFileHandle('store-content.json');
+      applyStoreCopy(JSON.parse(await (await handle.getFile()).text()), 'Loaded public notes from data/store-content.json.');
+    } catch (error) {
+      applyStoreCopy(storeCopyDefaults, 'Starter copy loaded. Save to create data/store-content.json.');
+    }
+  }
+  $('#store-copy-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!state.root) { $('#store-copy-state').textContent = 'Read-only preview: select the local repository root folder before saving public notes.'; return; }
+    const copy = { version: 1 };
+    storeCopyKeys.forEach((key) => { copy[key] = document.querySelector(`#copy-${key}`).value.trim(); });
+    try {
+      const dir = await subdir(state.root, 'data', true);
+      const handle = await dir.getFileHandle('store-content.json', { create: true });
+      const writable = await handle.createWritable();
+      await writable.write(`${JSON.stringify(copy, null, 2)}\n`);
+      await writable.close();
+      applyStoreCopy(copy, 'Saved public notes to data/store-content.json. Push that file to publish the updated blurbs.');
+    } catch (error) {
+      $('#store-copy-state').textContent = `Could not save public notes: ${error.message}`;
+    }
+  });
+  $('#reset-store-copy').addEventListener('click', () => applyStoreCopy(storeCopyDefaults, 'Starter copy restored in the form. Save public notes to keep the reset.'));
 
   $('#connect-folder').addEventListener('click', connect);
   $('#reload-catalog').addEventListener('click', loadCatalog);
