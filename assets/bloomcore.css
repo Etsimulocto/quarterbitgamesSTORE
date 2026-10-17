@@ -63,3 +63,28 @@
 .photo-tile-meta b{color:var(--lime);font-weight:400}
 .photo-library-empty{grid-column:1/-1;border:1px dashed #38433f;padding:24px;color:#98a4a3;font-size:12px;line-height:1.7;text-align:center}
 @media(max-width:600px){.panel-heading-row{flex-direction:column}.photo-refresh{width:100%}.photo-library{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.photo-tile img{height:116px}.photo-tile-copy{padding:8px}}
+
+
+/* Local order and shipping workbench */
+.order-panel{border-color:#35423a;background:linear-gradient(145deg,rgba(84,245,232,.035),transparent 44%),var(--panel)}
+.order-fields{margin-top:20px}
+.order-total{display:grid;grid-template-columns:1fr auto;align-items:center;gap:5px 16px;border:1px solid #3b493c;background:#090d0d;padding:16px 18px}
+.order-total>span{font:9px var(--mono);letter-spacing:.12em;color:var(--cyan)}
+.order-total strong{font:600 25px var(--display);color:var(--lime)}
+.order-total small{grid-column:1/-1;color:var(--muted);font:9px var(--mono);letter-spacing:.04em;line-height:1.6}
+.order-actions{align-items:center}
+.admin-actions .order-paypal-link{display:inline-flex;align-items:center;justify-content:center;min-height:43px;padding:10px 14px;border:1px solid var(--cyan);color:var(--cyan);font:9px var(--mono);letter-spacing:.08em}
+.admin-actions .order-paypal-link:hover{background:var(--cyan);color:#061010}
+.order-actions button:disabled{opacity:.42;cursor:not-allowed}
+.invoice-copy-label{display:grid;gap:8px;margin-top:18px}
+.invoice-copy-label textarea{width:100%;min-height:115px;resize:vertical;background:#07090c;color:#d8e5e1;border:1px solid var(--line);padding:12px;font:11px/1.6 var(--mono)}
+.orders-list-title{font:10px var(--mono);letter-spacing:.12em;color:var(--cyan);margin:25px 0 10px}
+.order-edit-button{border:1px solid #41534a;background:transparent;color:var(--lime);padding:6px 10px;font:9px var(--mono);cursor:pointer}
+.order-edit-button:hover{border-color:var(--lime)}
+.order-table td{vertical-align:middle}
+@media(max-width:700px){
+  .order-total{padding:14px}
+  .order-actions{display:grid;grid-template-columns:1fr 1fr}
+  .admin-actions .order-paypal-link{min-height:42px}
+  .order-table{min-width:580px}
+}
