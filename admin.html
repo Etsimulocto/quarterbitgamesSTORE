@@ -60,6 +60,26 @@
         <p class="admin-note">Drafts stay private on the public catalog. Keep the original photo names intact so inventory IDs remain stable.</p>
         <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>ITEM ID</th><th>NAME</th><th>TYPE</th><th>STATUS</th><th>PRICE</th></tr></thead><tbody id="catalog-rows"></tbody></table></div>
       </section>
+      <section class="admin-panel order-panel" id="orders-panel">
+        <h2>06 / Orders, shipping &amp; PayPal</h2>
+        <p class="admin-note">Log the buyer and item subtotal when an order comes in. Add the actual shipping charge once packed; the total due updates automatically. Copy the invoice details, then review and send the invoice from PayPal.</p>
+        <form id="order-form" class="admin-fields order-fields">
+          <label><span class="admin-label">ORDER REFERENCE</span><input id="order-ref" required></label>
+          <label><span class="admin-label">BUYER NAME</span><input id="order-buyer" autocomplete="name" placeholder="Name on the order"></label>
+          <label><span class="admin-label">BUYER EMAIL</span><input id="order-email" type="email" autocomplete="email" placeholder="buyer@example.com"></label>
+          <label><span class="admin-label">ORDER STATUS</span><select id="order-status"><option value="awaiting-shipping">Waiting for shipping amount</option><option value="ready-to-invoice">Ready to invoice</option><option value="invoiced">Invoice sent in PayPal</option><option value="paid">Paid</option><option value="shipped">Shipped</option></select></label>
+          <label class="full"><span class="admin-label">ITEMS / ORDER NOTES</span><textarea id="order-items" required placeholder="BloomSlice 1604 × 1"></textarea></label>
+          <label><span class="admin-label">ITEMS SUBTOTAL (USD)</span><input id="order-subtotal" type="number" min="0" step="0.01" required placeholder="0.00"></label>
+          <label><span class="admin-label">SHIPPING (USD)</span><input id="order-shipping" type="number" min="0" step="0.01" placeholder="Add once postage is known"></label>
+          <div class="order-total full" aria-live="polite"><span>TOTAL DUE</span><strong id="order-total">$0.00</strong><small id="order-total-note">Enter the shipping amount before preparing the invoice.</small></div>
+          <div class="admin-actions full order-actions"><button type="submit">SAVE ORDER</button><button id="copy-invoice" type="button" disabled>COPY PAYPAL INVOICE DETAILS</button><a class="order-paypal-link" href="https://www.paypal.com/us/business/accept-payments/invoice" target="_blank" rel="noopener noreferrer">OPEN PAYPAL INVOICING ↗</a><button id="new-order" type="button">NEW ORDER</button><button id="delete-order" type="button" disabled>DELETE ORDER</button></div>
+        </form>
+        <label class="invoice-copy-label" for="invoice-copy-text"><span class="admin-label">INVOICE DETAILS TO COPY</span><textarea id="invoice-copy-text" rows="5" readonly placeholder="Save an order and enter its shipping amount to prepare PayPal invoice details."></textarea></label>
+        <div class="save-state" id="order-state" aria-live="polite">Order records are kept in this browser on this computer, not in the public repo.</div>
+        <h3 class="orders-list-title">ORDER QUEUE</h3>
+        <div class="admin-table-wrap"><table class="admin-table order-table"><thead><tr><th>ORDER</th><th>BUYER</th><th>STATUS</th><th>TOTAL</th><th>EDIT</th></tr></thead><tbody id="order-rows"></tbody></table></div>
+      </section>
+      <div class="admin-warning"><strong>Order privacy:</strong> order records stay in this browser on this computer and are not written into the public repo. Shipping charges and invoice totals are prepared here; review and send the actual invoice from PayPal.</div>
       <div class="admin-warning"><strong>Publish flow:</strong> this tool only writes files to the local folder you chose. After saving, use GitHub Desktop (or git) to review and push the changed <b>data/catalog.json</b> and photos. Checkout links are external Spiralside URLs; this first pass does not process payments or collect customer accounts.</div>
     </main>
     <footer class="site-footer admin-footer"><span>© QUARTERBITGAMES <i>·</i> BLOOMCORE MARKET</span><span>LOCAL EDITS STAY IN YOUR REPO</span><a href="./">BACK TO MARKET ↗</a></footer>
