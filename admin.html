@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#050609">
+  <title>Admin Console · Bloomcore Market</title>
+  <link rel="stylesheet" href="./assets/bloomcore.css">
+</head>
+<body class="admin-body">
+  <div class="scanlines" aria-hidden="true"></div>
+  <div class="site-shell">
+    <header class="topbar">
+      <a class="brand" href="./"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span class="brand-copy"><strong>BLOOMCORE</strong><small>INVENTORY CONSOLE</small></span></a>
+      <div class="top-status"><span class="live-dot"></span><span>LOCAL EDIT MODE</span><b>ADMIN</b></div>
+      <a class="back-link" href="./">← RETURN TO MARKET</a>
+    </header>
+    <main class="admin-main">
+      <section class="admin-heading"><div><div class="eyebrow"><span>PRIVATE WORKBENCH / 02</span><span class="eyebrow-line"></span><span>LOCAL FILES ONLY</span></div><h1>Inventory <em>console.</em></h1></div><p>Drop in a photo batch, keep each filename as its item ID, then edit the listing details. Your browser writes the catalog and images into the local repo folder you select.</p></section>
+      <section class="admin-panel">
+        <h2>01 / Connect your repo folder</h2>
+        <p class="admin-note">Open this admin page on GitHub Pages or localhost in a Chromium browser. Pick the local <b>quarterbitgamesSTORE</b> folder you cloned to this computer. No credentials or online writes are used here.</p>
+        <div class="admin-actions"><button id="connect-folder" type="button">SELECT LOCAL REPO FOLDER</button><button id="reload-catalog" type="button">RELOAD CATALOG</button></div>
+        <div class="save-state" id="folder-state">No repo folder selected.</div>
+      </section>
+      <section class="admin-panel">
+        <h2>02 / Import photos</h2>
+        <p class="admin-note">Accepts JPG, PNG, WebP, and GIF. The exact filename stem becomes the item ID; for example <b>HJ-BL-087.jpg</b> becomes <b>HJ-BL-087</b>. Each new listing starts as a draft.</p>
+        <label class="upload-zone" id="upload-zone" for="photo-files"><span><p>Drop a photo batch here<br>or select files from your computer</p><span class="upload-button">CHOOSE PHOTOS</span></span><input id="photo-files" type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple></label>
+        <p class="save-state" id="import-state" aria-live="polite"></p>
+      </section>
+      <section class="admin-panel">
+        <h2>03 / Edit listing</h2>
+        <p class="admin-note">Select an item below to edit it. Mark a listing Available and Published when its description, price, and checkout link are ready.</p>
+        <form id="item-form" class="admin-fields">
+          <label><span class="admin-label">ITEM ID / PHOTO NAME</span><input id="field-id" required></label>
+          <label><span class="admin-label">DISPLAY NAME</span><input id="field-name" required></label>
+          <label><span class="admin-label">ITEM TYPE</span><select id="field-type"><option value="happy-jarz">Happy Jarz</option><option value="bloomslice">BloomSlice</option><option value="bloomtrelis">Bloomtrelis</option><option value="other">Other builds</option></select></label>
+          <label><span class="admin-label">LISTING KIND</span><select id="field-kind"><option value="unique">One-of-one item</option><option value="stock">Repeatable / stock item</option></select></label>
+          <label><span class="admin-label">PRICE (USD)</span><input id="field-price" type="number" min="0" step="0.01" placeholder="Leave blank until set"></label>
+          <label><span class="admin-label">UPC</span><input id="field-upc" inputmode="numeric" placeholder="Optional"></label>
+          <label><span class="admin-label">QUANTITY</span><input id="field-quantity" type="number" min="0" step="1" value="1"></label>
+          <label><span class="admin-label">CONDITION / BUILD</span><select id="field-condition"><option value="new">New build</option><option value="handmade">Handmade</option><option value="prototype">Prototype</option><option value="used">Used</option></select></label>
+          <label><span class="admin-label">STATUS</span><select id="field-status"><option value="draft">Draft</option><option value="preview">Test preview · visible, not for sale</option><option value="available">Available</option><option value="sold">Sold</option><option value="reserved">Reserved</option></select></label>
+          <label><span class="admin-label">PUBLIC LISTING</span><select id="field-published"><option value="false">Hidden / draft</option><option value="true">Published</option></select></label>
+          <label class="full"><span class="admin-label">DESCRIPTION</span><textarea id="field-description" placeholder="What is this piece? What makes this one different?"></textarea></label>
+          <label class="full"><span class="admin-label">SPIRALSIDE CHECKOUT URL</span><input id="field-checkout" type="url" placeholder="Add the item checkout link when ready"></label>
+          <div class="admin-actions full"><button type="submit">SAVE ITEM DETAILS</button><button type="button" id="new-item">NEW BLANK LISTING</button><button type="button" id="remove-item">REMOVE SELECTED</button></div>
+        </form>
+        <div class="save-state" id="edit-state" aria-live="polite"></div>
+      </section>
+      <section class="admin-panel">
+        <h2>04 / Current catalog</h2>
+        <p class="admin-note">Drafts stay private on the public catalog. Keep the original photo names intact so inventory IDs remain stable.</p>
+        <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>ITEM ID</th><th>NAME</th><th>TYPE</th><th>STATUS</th><th>PRICE</th></tr></thead><tbody id="catalog-rows"></tbody></table></div>
+      </section>
+      <div class="admin-warning"><strong>Publish flow:</strong> this tool only writes files to the local folder you chose. After saving, use GitHub Desktop (or git) to review and push the changed <b>data/catalog.json</b> and photos. Checkout links are external Spiralside URLs; this first pass does not process payments or collect customer accounts.</div>
+    </main>
+    <footer class="site-footer admin-footer"><span>© QUARTERBITGAMES <i>·</i> BLOOMCORE MARKET</span><span>LOCAL EDITS STAY IN YOUR REPO</span><a href="./">BACK TO MARKET ↗</a></footer>
+  </div>
+  <script src="./assets/admin.js"></script>
+</body>
+</html>

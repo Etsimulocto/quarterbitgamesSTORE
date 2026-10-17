@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "id": "1000007559",
+      "name": "Test photo \u00b7 1000007559",
+      "type": "other",
+      "kind": "unique",
+      "price": "",
+      "upc": "",
+      "quantity": 1,
+      "condition": "prototype",
+      "status": "preview",
+      "published": true,
+      "description": "Test image imported from the photo inbox. Set the correct product type and listing details before offering this item for sale.",
+      "checkoutUrl": "",
+      "image": "1000007559.jpg"
+    },
+    {
+      "id": "1000007561",
+      "name": "Test photo \u00b7 1000007561",
+      "type": "other",
+      "kind": "unique",
+      "price": "",
+      "upc": "",
+      "quantity": 1,
+      "condition": "prototype",
+      "status": "preview",
+      "published": true,
+      "description": "Test image imported from the photo inbox. Set the correct product type and listing details before offering this item for sale.",
+      "checkoutUrl": "",
+      "image": "1000007561.jpg"
+    },
+    {
+      "id": "IMG_20261014_171511577",
+      "name": "Test photo \u00b7 IMG_20261014_171511577",
+      "type": "other",
+      "kind": "unique",
+      "price": "",
+      "upc": "",
+      "quantity": 1,
+      "condition": "prototype",
+      "status": "preview",
+      "published": true,
+      "description": "Test image imported from the photo inbox. Set the correct product type and listing details before offering this item for sale.",
+      "checkoutUrl": "",
+      "image": "IMG_20261014_171511577.jpg"
+    }
+  ]
+}
