@@ -4,3 +4,43 @@
 @media(max-width:850px){.site-shell{padding-left:22px;padding-right:22px}.hero{min-height:450px;padding-left:5%;padding-right:5%}.hero-orbit{right:1%;opacity:.78;transform:translateY(-50%) scale(.82)}.hero-copy{width:65%}.product-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.maker-strip{grid-template-columns:45px 1fr 1fr;gap:14px}.maker-strip .button{grid-column:2/-1;justify-self:start}.admin-main{padding:38px 22px}.top-status{font-size:8px}}
 @media(max-width:600px){html{scroll-padding-bottom:93px}.site-shell{padding:0 14px 110px}.topbar{height:67px}.brand-mark{width:27px;height:27px}.brand-copy strong{font-size:12px}.brand-copy small{font-size:7px}.top-status{display:none}.spiral-link{font-size:8px;padding:10px}.hero{min-height:585px;margin-top:14px;padding:36px 22px 53px;align-items:flex-start}.hero-grid{inset:33% 0 0}.hero-copy{width:100%}.hero h1{font-size:clamp(50px,14vw,72px);margin:21px 0 15px}.hero-intro{font-size:13px;max-width:365px}.hero-orbit{width:270px;height:270px;right:50%;top:auto;bottom:11px;transform:translateX(50%) scale(.67);opacity:.85}.orbit-label-a{right:-25px}.orbit-label-b{left:-36px}.orbit-cross{right:0}.hero-bottom{bottom:12px;left:13px;right:13px;font-size:7px}.hero-bottom span:last-child{display:none}.catalog-section{padding:65px 0 48px}.section-heading{align-items:start;gap:12px;flex-direction:column}.section-heading h2{font-size:42px}.section-note{text-align:left;font-size:8px}.filter-row{margin-right:-14px;padding-right:14px}.filter-pill{font-size:8px;padding:10px 12px}.product-grid{grid-template-columns:1fr;gap:12px}.product-photo{aspect-ratio:1.45}.product-info{padding:13px 14px 15px}.product-name{font-size:18px}.product-description{font-size:11px;min-height:0}.empty-state{min-height:330px}.maker-strip{grid-template-columns:35px 1fr;padding:22px 18px;gap:8px 14px}.maker-star{font-size:30px}.maker-strip h2{font-size:25px}.maker-strip p{grid-column:2;margin:5px 0;font-size:11px}.maker-strip .button{grid-column:2}.site-footer{font-size:7px;flex-wrap:wrap}.site-footer span:nth-child(2){display:none}.hud{justify-content:flex-start;overflow-x:auto;padding:6px 9px;padding-bottom:max(6px,env(safe-area-inset-bottom));gap:3px;scrollbar-width:none}.hud::-webkit-scrollbar{display:none}.hud a{min-width:72px}.hud .hud-home{min-width:52px}.hud .hud-admin{min-width:67px;margin-left:3px;padding-left:5px}.hud small{font-size:7px}.dialog-layout{grid-template-columns:1fr;max-height:calc(100dvh - 26px);overflow:auto}.dialog-photo{min-height:0;height:42dvh;border-right:0;border-bottom:1px solid var(--line)}.dialog-photo img{max-height:40dvh}.dialog-info{padding:25px 22px 24px}.dialog-info h2{font-size:28px}.dialog-id{margin-bottom:15px}.dialog-description{font-size:12px}.dialog-specs{margin:16px 0}.dialog-close{right:8px;top:8px}.admin-main{padding:32px 14px}.admin-heading{align-items:start;flex-direction:column}.admin-heading h1{font-size:44px}.admin-heading p{font-size:12px}.admin-panel{padding:17px}.admin-fields{grid-template-columns:1fr}.admin-fields .full{grid-column:auto}.admin-actions button,.upload-button{font-size:8px;padding:11px}}
 @media(min-width:601px) and (max-width:740px){.hud a{min-width:76px}.hud small{font-size:7px}}
+
+/* Bloomcore spiral-lotus identity and a more compact storefront masthead. */
+.topbar{height:64px}
+.brand{gap:10px}
+.brand-mark{width:32px;height:32px;border:0;border-radius:0;overflow:visible}
+.brand-mark:before,.brand-mark:after,.brand-mark i{display:none}
+.brand-emblem{display:block;width:100%;height:100%;overflow:visible}
+.brand-emblem .petal{fill:none;stroke:var(--lime);stroke-width:7;stroke-linejoin:round;opacity:.85}
+.brand-emblem .petal-left,.brand-emblem .petal-lower-right{stroke:var(--cyan)}
+.brand-emblem .petal-right,.brand-emblem .petal-lower-left{stroke:var(--pink)}
+.brand-emblem .spiral-stroke{fill:none;stroke:var(--lime);stroke-width:9;stroke-linecap:round;stroke-linejoin:round}
+.hero{min-height:390px;margin-top:20px;padding-top:38px;padding-bottom:38px}
+.hero-orbit{width:340px;height:340px;right:9%;}
+.bloom-halo{position:absolute;border:1px solid rgba(84,245,232,.28);border-radius:50%;}
+.bloom-halo-a{width:286px;height:286px;border-style:dashed;border-color:rgba(200,255,61,.3);}
+.bloom-halo-b{width:232px;height:232px;border-color:rgba(255,79,163,.34);box-shadow:0 0 55px rgba(84,245,232,.06),inset 0 0 36px rgba(84,245,232,.045)}
+.bloom-emblem{position:relative;z-index:1;width:248px;height:248px;overflow:visible;filter:drop-shadow(0 0 14px rgba(84,245,232,.14));}
+.bloom-emblem .petal{fill:rgba(84,245,232,.035);stroke:var(--cyan);stroke-width:2.4;stroke-linejoin:round;}
+.bloom-emblem .petal-top{stroke:var(--lime);fill:rgba(200,255,61,.045)}
+.bloom-emblem .petal-right,.bloom-emblem .petal-lower-left{stroke:var(--pink);fill:rgba(255,79,163,.035)}
+.bloom-emblem .petal-left,.bloom-emblem .petal-lower-right{stroke:var(--cyan);}
+.bloom-emblem .spiral-stroke{fill:none;stroke:var(--lime);stroke-width:4;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 5px rgba(200,255,61,.35))}
+.bloom-emblem .emblem-center{fill:none;stroke:rgba(200,255,61,.25);stroke-width:1;stroke-dasharray:2 7}
+.orbit-label-a{top:27px;right:-2px}
+.orbit-label-b{bottom:27px;left:-2px}
+.bloom-spark{position:absolute;z-index:2;color:var(--pink);font-size:20px;line-height:1;text-shadow:0 0 16px rgba(255,79,163,.5)}
+.bloom-spark-a{right:30px;bottom:84px}
+.bloom-spark-b{left:46px;top:83px;color:var(--lime);font-size:14px}
+@media(max-width:850px){.hero{min-height:370px}.hero-orbit{right:2%;transform:translateY(-50%) scale(.78)}}
+@media(max-width:600px){
+  .topbar{height:60px}
+  .hero{min-height:495px;margin-top:12px;padding-top:29px;padding-bottom:48px}
+  .hero-orbit{width:270px;height:270px;right:50%;top:auto;bottom:6px;transform:translateX(50%) scale(.69);opacity:.9}
+  .bloom-halo-a{width:255px;height:255px}
+  .bloom-halo-b{width:208px;height:208px}
+  .bloom-emblem{width:232px;height:232px}
+  .orbit-label-a{right:-22px;top:9px}
+  .orbit-label-b{left:-26px;bottom:9px}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition-duration:.01ms!important}}
