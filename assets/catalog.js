@@ -114,6 +114,14 @@
   dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); });
   hudItems.forEach((link) => link.addEventListener('click', () => setFilter(link.dataset.filter)));
 
+  const storeCopyKeys = ['eyebrow','heading','headingAccent','intro','turnaroundTitle','turnaroundBody','careTitle','careBody','multiTitle','multiBody','artTitle','artBody','sizesTitle','sizesBody'];
+  fetch('./data/store-content.json').then((response) => response.ok ? response.json() : Promise.reject(new Error('Store copy unavailable.'))).then((copy) => {
+    storeCopyKeys.forEach((key) => {
+      const id = key.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
+      const element = document.querySelector(`#store-copy-${id}`);
+      if (element && typeof copy[key] === 'string') element.textContent = copy[key];
+    });
+  }).catch(() => {});
   fetch('./data/catalog.json').then((response) => response.ok ? response.json() : []).then((data) => {
     allItems = Array.isArray(data.items) ? data.items : [];
     const hash = location.hash.replace('#', '');
