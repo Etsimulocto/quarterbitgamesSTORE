@@ -8,7 +8,14 @@
   ];
   const TYPE_NAMES = { 'happy-jarz': 'HAPPY JARZ', bloomslice: 'BLOOMSLICE', bloomtrelis: 'BLOOMTRELIS', other: 'OTHER BUILDS' };
   const money = (value) => value === '' || value === null || value === undefined ? '' : new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(value));
-  const cleanImage = (name) => `./assets/products/${encodeURIComponent(name || '')}`;
+  const cleanImage = (name) => {
+    const value = String(name || '');
+    const inboxPrefix = 'photos-to-add/';
+    if (value.startsWith(inboxPrefix) && value.indexOf('/', inboxPrefix.length) === -1) {
+      return `./photos-to-add/${encodeURIComponent(value.slice(inboxPrefix.length))}`;
+    }
+    return `./assets/products/${encodeURIComponent(value)}`;
+  };
   let allItems = [];
   let activeType = 'all';
   const grid = document.querySelector('#product-grid');
