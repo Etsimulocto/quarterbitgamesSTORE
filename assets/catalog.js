@@ -36,11 +36,11 @@
       photo.append(img);
     } else fallback(photo, 'PHOTO SLOT');
     const corner = document.createElement('span'); corner.className = 'product-corner'; corner.textContent = TYPE_NAMES[item.type] || 'FIELD OBJECT';
-    const tag = document.createElement('span'); tag.className = 'status-tag'; tag.textContent = item.kind === 'unique' ? 'ONE OF ONE' : 'SMALL RUN';
+    const tag = document.createElement('span'); tag.className = 'status-tag'; tag.textContent = item.status === 'preview' ? 'TEST PHOTO' : item.kind === 'unique' ? 'ONE OF ONE' : 'SMALL RUN';
     photo.append(corner, tag);
     const info = document.createElement('div'); info.className = 'product-info';
     const meta = document.createElement('div'); meta.className = 'product-meta';
-    meta.innerHTML = `<span>${item.condition === 'new' ? 'NEW BUILD' : item.condition === 'prototype' ? 'PROTOTYPE' : 'MAKER GOODS'}</span><span>VIEW DETAILS ↗</span>`;
+    meta.innerHTML = `<span>${item.status === 'preview' ? 'TEST LISTING' : item.condition === 'new' ? 'NEW BUILD' : item.condition === 'prototype' ? 'PROTOTYPE' : 'MAKER GOODS'}</span><span>VIEW DETAILS ↗</span>`;
     const name = document.createElement('h3'); name.className = 'product-name'; name.textContent = item.name || item.id;
     const desc = document.createElement('p'); desc.className = 'product-description'; desc.textContent = item.description || 'Details for this piece are being added.';
     const bottom = document.createElement('div'); bottom.className = 'product-card-bottom';
@@ -78,7 +78,7 @@
   }
 
   function renderItems() {
-    const visible = allItems.filter((item) => item.status === 'available' && item.published !== false && (activeType === 'all' || item.type === activeType));
+    const visible = allItems.filter((item) => ['available', 'preview'].includes(item.status) && item.published !== false && (activeType === 'all' || item.type === activeType));
     grid.innerHTML = '';
     visible.forEach((item) => grid.append(itemCard(item)));
     count.textContent = `${visible.length} ${visible.length === 1 ? 'ITEM' : 'ITEMS'}`;
@@ -96,11 +96,11 @@
     document.querySelector('#dialog-id').textContent = `ITEM ID / ${item.id}`;
     document.querySelector('#dialog-description').textContent = item.description || 'Details for this piece are being added.';
     const specs = document.querySelector('#dialog-specs'); specs.innerHTML = '';
-    const entries = [['BUILD', item.condition || 'handmade'], ['UPC', item.upc || '—'], ['AVAILABILITY', item.kind === 'unique' ? 'One individual piece' : `${item.quantity || 1} in this run`]];
+    const entries = [['BUILD', item.condition || 'handmade'], ['UPC', item.upc || '—'], ['AVAILABILITY', item.status === 'preview' ? 'Test preview · not for sale' : item.kind === 'unique' ? 'One individual piece' : `${item.quantity || 1} in this run`]];
     entries.forEach(([label, value]) => { const dt = document.createElement('dt'); dt.textContent = label; const dd = document.createElement('dd'); dd.textContent = value; specs.append(dt, dd); });
     const buy = document.querySelector('#dialog-buy'); buy.innerHTML = '';
-    if (item.checkoutUrl) { const a = document.createElement('a'); a.className = 'button button-primary'; a.href = item.checkoutUrl; a.target = '_blank'; a.rel = 'noreferrer'; a.innerHTML = '<span>CONTINUE TO SPIRALSIDE</span><b aria-hidden="true">↗</b>'; buy.append(a); }
-    else { const button = document.createElement('button'); button.className = 'button button-disabled'; button.type = 'button'; button.disabled = true; button.innerHTML = '<span>CHECKOUT LINK PENDING</span><b aria-hidden="true">↗</b>'; buy.append(button); }
+    if (item.checkoutUrl && item.status !== 'preview') { const a = document.createElement('a'); a.className = 'button button-primary'; a.href = item.checkoutUrl; a.target = '_blank'; a.rel = 'noreferrer'; a.innerHTML = '<span>CONTINUE TO SPIRALSIDE</span><b aria-hidden="true">↗</b>'; buy.append(a); }
+    else { const button = document.createElement('button'); button.className = 'button button-disabled'; button.type = 'button'; button.disabled = true; button.innerHTML = item.status === 'preview' ? '<span>TEST IMAGE · NO CHECKOUT</span><b aria-hidden="true">◎</b>' : '<span>CHECKOUT LINK PENDING</span><b aria-hidden="true">↗</b>'; buy.append(button); }
     dialog.showModal();
   }
   document.querySelector('.dialog-close').addEventListener('click', () => dialog.close());
