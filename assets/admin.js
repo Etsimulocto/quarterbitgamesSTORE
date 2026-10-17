@@ -1,6 +1,6 @@
 (() => {
   const $ = (selector) => document.querySelector(selector);
-  const state = { root: null, items: [], photos: [], selected: null, currentImage: '' };
+  const state = { root: null, items: [], photos: [], selected: null, currentImage: '', foldersFound: 0 };
   const fields = ['id','name','type','kind','price','upc','quantity','condition','status','published','description','imageAlt','checkout'];
   const typeFromName = (name) => {
     const lower = name.toLowerCase();
@@ -12,6 +12,12 @@
   const defaultTitle = (id) => id.replace(/[-_]+/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
   const typeName = (type) => ({'happy-jarz':'Happy Jarz',bloomslice:'BloomSlice',bloomtrelis:'Bloomtrelis',other:'Other'}[type] || 'Other');
   const supportedImage = (name) => /\.(jpe?g|png|webp|gif)$/i.test(name);
+  const publicImageUrl = (image) => {
+    const value = String(image || '');
+    if (value.startsWith('photos-to-add/')) return `./photos-to-add/${encodeURIComponent(value.slice('photos-to-add/'.length))}`;
+    if (value.startsWith('assets/products/')) return `./assets/products/${encodeURIComponent(value.slice('assets/products/'.length))}`;
+    return `./assets/products/${encodeURIComponent(value)}`;
+  };
 
   async function connect() {
     if (!window.showDirectoryPicker) {
@@ -43,10 +49,12 @@
       await scanPhotos();
       $('#edit-state').textContent = `Loaded ${state.items.length} listing(s). Select any photo below to edit its listing.`;
     } catch (error) {
-      state.items = [];
       renderRows();
-      $('#edit-state').textContent = 'Could not read data/catalog.json. Make sure you selected the repository root folder.';
-      await scanPhotos();
+      const selectedName = state.root?.name || 'selected folder';
+      state.root = null;
+      $('#folder-state').textContent = `Could not load data/catalog.json from ${selectedName}. Select the repository root folder (the one containing index.html, data, and assets).`;
+      $('#edit-state').textContent = 'Read-only catalog preview is shown below. Select the repository root folder to save edits.';
+      showCatalogPreview();
     }
   }
 
@@ -68,7 +76,10 @@
   }
 
   async function scanPhotos() {
-    if (!state.root) return;
+    if (!state.root) {
+      $('#photo-library-state').textContent = 'Connect your local repository folder first. The catalog photo previews above can be viewed without it.';
+      return;
+    }
     state.photos.forEach((photo) => URL.revokeObjectURL(photo.previewUrl));
     state.photos = [];
     let foldersFound = 0;
@@ -88,8 +99,21 @@
         } catch (error) { console.warn(`Cannot read image ${folder}/${name}:`, error); }
       }
     }
+    state.foldersFound = foldersFound;
     state.photos.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
     renderPhotoLibrary(foldersFound);
+  }
+
+  function showCatalogPreview() {
+    state.photos = state.items.filter((item) => item.image).map((item) => {
+      const image = String(item.image);
+      const inbox = image.startsWith('photos-to-add/');
+      const name = image.split('/').pop();
+      return { name, id: item.id, folder: inbox ? 'photos-to-add' : 'assets/products', catalogImage: image, previewUrl: publicImageUrl(image), itemId: item.id, status: item.status || 'draft', remotePreview: true };
+    });
+    state.foldersFound = 2;
+    renderPhotoLibrary(2);
+    $('#photo-library-state').textContent = `${state.photos.length} catalog photo(s) loaded. Connect the local repo folder to scan every image and save edits.`;
   }
 
   function renderPhotoLibrary(foldersFound = 0) {
@@ -147,7 +171,7 @@
     state.selected = item.id;
     state.currentImage = item.image || '';
     $('#edit-state').textContent = `Editing ${item.id}`;
-    renderPhotoLibrary(state.photos.length ? 1 : 0);
+    renderPhotoLibrary(state.foldersFound);
   }
 
   function selectItem(id) {
@@ -171,7 +195,7 @@
     state.selected = null; state.currentImage = ''; $('#item-form').reset(); $('#field-quantity').value = 1;
     $('#field-status').value = 'draft'; $('#field-published').value = 'false';
     $('#edit-state').textContent = 'New listing. Set its ID and details, then save.';
-    renderPhotoLibrary(state.photos.length ? 1 : 0);
+    renderPhotoLibrary(state.foldersFound);
   }
 
   async function importFiles(files) {
@@ -201,6 +225,7 @@
   $('#item-form').addEventListener('submit', async (event) => {
     event.preventDefault();
     try {
+      if (!state.root) throw new Error('Read-only preview: select the local repository root folder before saving edits.');
       const item = formItem();
       if (!item.id) throw new Error('Add an item ID.');
       const existing = state.items.findIndex((record) => record.id === state.selected);
@@ -214,6 +239,7 @@
   $('#new-item').addEventListener('click', blank);
   $('#remove-item').addEventListener('click', async () => {
     if (!state.selected) { $('#edit-state').textContent = 'Select a saved item first.'; return; }
+    if (!state.root) { $('#edit-state').textContent = 'Read-only preview: select the local repository root folder before removing a listing.'; return; }
     state.items = state.items.filter((item) => item.id !== state.selected);
     try { await writeCatalog(); renderRows(); blank(); await scanPhotos(); $('#edit-state').textContent = 'Listing removed from catalog. Its photo file stays in the repo photo library.'; }
     catch (error) { $('#edit-state').textContent = error.message; }
@@ -224,4 +250,13 @@
   ['dragleave','drop'].forEach((name) => zone.addEventListener(name, (event) => { event.preventDefault(); zone.classList.remove('dragging'); }));
   zone.addEventListener('drop', (event) => importFiles(event.dataTransfer.files));
   renderRows();
+  fetch('./data/catalog.json').then((response) => response.ok ? response.json() : Promise.reject(new Error('Catalog file not available.'))).then((catalog) => {
+    if (state.root) return;
+    state.items = Array.isArray(catalog.items) ? catalog.items : [];
+    renderRows(); showCatalogPreview();
+    $('#folder-state').textContent = 'Catalog loaded for preview. Select your local repo folder to edit and save listings.';
+    $('#edit-state').textContent = `Showing ${state.items.length} catalog listing(s) in read-only preview.`;
+  }).catch(() => {
+    $('#folder-state').textContent = 'Select your local repo folder to load photos and edit listings.';
+  });
 })();
