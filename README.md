@@ -1,29 +1,36 @@
 # Bloomcore Market
 
-The public catalog and local inventory console for quarterbitgames.
+The Bloomcore Market is the public, mobile-friendly catalog and local admin workbench for quarterbitgames.
 
-## Public catalog
+## Storefront
 
-The site is a static storefront. Listings marked `status: "available"` and `published: true` appear in the market grid. Each item record supports a unique item ID, item type, photo filename, description, price, UPC, quantity, and an optional external checkout URL.
-
-Payment and customer accounts remain on the configured external Spiralside checkout. This repository does not collect payment information or customer data.
-
-## Add photos and listings
-
-1. Clone this repository to your computer and open the public site from GitHub Pages or a local HTTPS/localhost server in Chrome or Edge.
-2. Open **Admin Access** and select the local `quarterbitgamesSTORE` repo folder.
-3. Drop in a photo batch. The filename stem becomes the item ID (`HJ-BL-087.jpg` → `HJ-BL-087`). Files are copied into `assets/products/` and draft records are written to `data/catalog.json`.
-4. Select each listing and add its details. Use **Preview** to show a clearly marked test card with no checkout, or set **Status** to Available and **Public listing** to Published when it is ready for sale.
-5. Review the changed files and commit/push them with GitHub Desktop or git.
-
-The admin page writes only to the local folder you select. The hosted storefront itself is public and read-only. Keep one-off HAPPY JARZ as separate item records; repeatable products can use the same item type with their UPC and available quantity.
-
-## Item types
+The storefront displays catalog records that have both `status: "available"` and `published: true`. Product types currently include:
 
 - `happy-jarz`
 - `bloomslice`
 - `bloomtrelis`
 - `other`
+
+Each item can have its own photo, stable item ID, name, description, price, UPC, quantity, condition, and optional Spiralside checkout URL. One-of-a-kind Happy Jarz should be listed as separate items. Keep the original photo filename so the item ID remains recognizable.
+
+The bottom **Maker Notes** section covers build timing, care, multi-item orders, custom screen art, and rack sizes. Edit those public blurbs in Admin; they are saved in `data/store-content.json`.
+
+## Add photos and listings
+
+1. Put original photos in `photos-to-add/`, or use **Import Photos** in Admin. Keep useful filenames such as `HJ-BL-087.jpg` or `Bloomslice-R3.5-004.jpg`.
+2. Start the local server below and open `http://localhost:8000/admin.html` in Chrome or Edge.
+3. In Admin, select the local repository root folder—the folder containing `index.html`, `admin.html`, `data/`, and `assets/`.
+4. Scan the photo folders or import a batch. Select each photo to create or edit its listing. Drafts and previews do not offer checkout.
+5. Save listings to `data/catalog.json`. Save public Maker Notes to `data/store-content.json`.
+6. Review and push the changed catalog/content files and any new product photos with GitHub Desktop or git.
+
+The admin editor writes only to the local repo folder you select. The hosted storefront is public and read-only; it cannot write to your computer.
+
+## Orders, shipping, and PayPal
+
+Use the Admin **Orders, shipping & PayPal** section to record an order, buyer name/email, item summary, and item subtotal. Add shipping after the package is ready; the admin calculates the amount due as **items subtotal + shipping**. Copy the prepared invoice details and open PayPal invoicing to review and send the invoice from your PayPal account.
+
+This is a manual PayPal workflow; the static site does not send invoices or connect to PayPal’s API. Order queue records are kept in browser local storage on the current computer and browser profile. They are not written into GitHub or shared with the public site. Clearing that browser’s site data will remove the local queue, so keep any separate business records you need.
 
 ## Catalog record
 
@@ -41,10 +48,24 @@ The admin page writes only to the local folder you select. The hosted storefront
   "published": true,
   "description": "Listing description goes here.",
   "checkoutUrl": "https://spiralside.com/your-checkout-link",
-  "image": "HJ-BL-087.jpg"
+  "image": "HJ-BL-087.jpg",
+  "imageAlt": "Blue Happy Jarz mounted in a teak stand"
 }
 ```
 
-## Run locally
+## Run locally on Windows
 
-From the repository root, run `python3 -m http.server 8000` and open `http://localhost:8000`. The admin folder picker requires a secure context such as localhost or HTTPS.
+Open PowerShell and run:
+
+```powershell
+cd "$env:USERPROFILE\Documents\quarterbitgamesSTORE"
+git pull --ff-only origin main
+py -m http.server 8000
+```
+
+Keep PowerShell open while using the local site. Stop the server with **Ctrl+C** when finished. If your repo is stored in another folder, change the `cd` path to match it.
+
+- Store: `http://localhost:8000/`
+- Admin: `http://localhost:8000/admin.html`
+
+The local folder picker requires Chrome or Edge on localhost or HTTPS.
