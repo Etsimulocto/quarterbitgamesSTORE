@@ -79,6 +79,28 @@
         <h3 class="orders-list-title">ORDER QUEUE</h3>
         <div class="admin-table-wrap"><table class="admin-table order-table"><thead><tr><th>ORDER</th><th>BUYER</th><th>STATUS</th><th>TOTAL</th><th>EDIT</th></tr></thead><tbody id="order-rows"></tbody></table></div>
       </section>
+      <section class="admin-panel store-copy-panel" id="store-copy-panel">
+        <h2>07 / Public maker notes</h2>
+        <p class="admin-note">Edit the text shown in the maker-notes section at the bottom of the storefront. These blurbs are public shop copy and save to <b>data/store-content.json</b>.</p>
+        <form id="store-copy-form" class="admin-fields store-copy-fields">
+          <label><span class="admin-label">SECTION EYEBROW</span><input id="copy-eyebrow" maxlength="80"></label>
+          <label><span class="admin-label">HEADING · MAIN</span><input id="copy-heading" maxlength="120"></label>
+          <label><span class="admin-label">HEADING · ACCENT</span><input id="copy-headingAccent" maxlength="120"></label>
+          <label class="full"><span class="admin-label">INTRO</span><textarea id="copy-intro" rows="2"></textarea></label>
+          <label><span class="admin-label">ORDER TIMING · TITLE</span><input id="copy-turnaroundTitle"></label>
+          <label class="full"><span class="admin-label">ORDER TIMING · BLURB</span><textarea id="copy-turnaroundBody" rows="3"></textarea></label>
+          <label><span class="admin-label">CARE · TITLE</span><input id="copy-careTitle"></label>
+          <label class="full"><span class="admin-label">CARE · BLURB</span><textarea id="copy-careBody" rows="3"></textarea></label>
+          <label><span class="admin-label">MULTI-ITEM · TITLE</span><input id="copy-multiTitle"></label>
+          <label class="full"><span class="admin-label">MULTI-ITEM · BLURB</span><textarea id="copy-multiBody" rows="3"></textarea></label>
+          <label><span class="admin-label">CUSTOM ART · TITLE</span><input id="copy-artTitle"></label>
+          <label class="full"><span class="admin-label">CUSTOM ART · BLURB</span><textarea id="copy-artBody" rows="3"></textarea></label>
+          <label><span class="admin-label">RACK SIZES · TITLE</span><input id="copy-sizesTitle"></label>
+          <label class="full"><span class="admin-label">RACK SIZES · BLURB</span><textarea id="copy-sizesBody" rows="3"></textarea></label>
+          <div class="admin-actions full"><button type="submit">SAVE PUBLIC NOTES</button><button id="reset-store-copy" type="button">RESET TO STARTER COPY</button></div>
+        </form>
+        <div class="save-state" id="store-copy-state" aria-live="polite">Starter copy shown in preview. Connect your repo folder to save changes.</div>
+      </section>
       <div class="admin-warning"><strong>Order privacy:</strong> order records stay in this browser on this computer and are not written into the public repo. Shipping charges and invoice totals are prepared here; review and send the actual invoice from PayPal.</div>
       <div class="admin-warning"><strong>Publish flow:</strong> this tool only writes files to the local folder you chose. After saving, use GitHub Desktop (or git) to review and push the changed <b>data/catalog.json</b> and photos. Checkout links are external Spiralside URLs; this first pass does not process payments or collect customer accounts.</div>
     </main>
