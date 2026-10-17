@@ -318,7 +318,7 @@
       `Items subtotal: ${money(order.subtotal)}`,
       `Shipping: ${money(order.shipping)}`,
       `TOTAL DUE: ${money(Number(order.subtotal) + Number(order.shipping))}`
-    ].join('\\n');
+    ].join('\n');
   }
   $('#order-form').addEventListener('submit', (event) => {
     event.preventDefault();
@@ -355,7 +355,16 @@
   $('#order-shipping').addEventListener('input', updateOrderTotal);
   $('#order-status').addEventListener('change', () => {
     const order = orderState.orders.find((record) => record.id === orderState.selectedId);
-    if (order) { order.status = $('#order-status').value; order.updatedAt = new Date().toISOString(); }
+    if (!order) return;
+    order.status = $('#order-status').value;
+    order.updatedAt = new Date().toISOString();
+    try {
+      localStorage.setItem(orderStoreKey, JSON.stringify(orderState.orders));
+      renderOrders();
+      $('#order-state').textContent = `Updated ${order.id} to ${orderStatusLabel(order.status)} in this browser.`;
+    } catch (error) {
+      $('#order-state').textContent = 'Could not update browser order storage.';
+    }
   });
   $('#copy-invoice').addEventListener('click', async () => {
     const order = orderFormValue();
