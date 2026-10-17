@@ -13,7 +13,8 @@
 .brand-emblem{display:block;width:100%;height:100%;overflow:visible}
 .brand-emblem .petal{fill:none;stroke:var(--lime);stroke-width:7;stroke-linejoin:round;opacity:.85}
 .brand-emblem .petal-left,.brand-emblem .petal-lower-right{stroke:var(--cyan)}
-.brand-emblem .petal-right,.brand-emblem .petal-lower-left{stroke:var(--pink)}
+.brand-emblem .petal-right,.brand-emblem .petal-lower-left,.brand-emblem .petal-bottom-right{stroke:var(--pink)}
+.brand-emblem .petal-bottom-left{stroke:var(--lime)}
 .brand-emblem .spiral-stroke{fill:none;stroke:var(--lime);stroke-width:9;stroke-linecap:round;stroke-linejoin:round}
 .hero{min-height:390px;margin-top:20px;padding-top:38px;padding-bottom:38px}
 .hero-orbit{width:340px;height:340px;right:9%;}
@@ -23,7 +24,8 @@
 .bloom-emblem{position:relative;z-index:1;width:248px;height:248px;overflow:visible;filter:drop-shadow(0 0 14px rgba(84,245,232,.14));}
 .bloom-emblem .petal{fill:rgba(84,245,232,.035);stroke:var(--cyan);stroke-width:2.4;stroke-linejoin:round;}
 .bloom-emblem .petal-top{stroke:var(--lime);fill:rgba(200,255,61,.045)}
-.bloom-emblem .petal-right,.bloom-emblem .petal-lower-left{stroke:var(--pink);fill:rgba(255,79,163,.035)}
+.bloom-emblem .petal-right,.bloom-emblem .petal-lower-left,.bloom-emblem .petal-bottom-right{stroke:var(--pink);fill:rgba(255,79,163,.035)}
+.bloom-emblem .petal-bottom-left{stroke:var(--lime);fill:rgba(200,255,61,.035)}
 .bloom-emblem .petal-left,.bloom-emblem .petal-lower-right{stroke:var(--cyan);}
 .bloom-emblem .spiral-stroke{fill:none;stroke:var(--lime);stroke-width:4;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 5px rgba(200,255,61,.35))}
 .bloom-emblem .emblem-center{fill:none;stroke:rgba(200,255,61,.25);stroke-width:1;stroke-dasharray:2 7}
