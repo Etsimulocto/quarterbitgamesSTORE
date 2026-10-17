@@ -88,3 +88,27 @@
   .admin-actions .order-paypal-link{min-height:42px}
   .order-table{min-width:580px}
 }
+
+/* Editable maker notes */
+.maker-notes{margin:28px 0 0;padding:clamp(24px,4vw,48px);background:radial-gradient(ellipse at top right,rgba(255,79,163,.055),transparent 40%),linear-gradient(140deg,rgba(84,245,232,.035),transparent 52%),var(--panel)}
+.maker-notes-heading{max-width:720px;margin-bottom:30px}
+.maker-notes-heading h2{font-size:clamp(30px,4.5vw,48px);letter-spacing:-.06em;line-height:1.02;margin:14px 0 12px}
+.maker-notes-heading h2 em{color:var(--lime);font-style:normal}
+.maker-notes-heading>p{max-width:600px;color:#a2aeae;font-size:13px;line-height:1.75;margin:0}
+.maker-note-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+.maker-note-card{grid-column:span 2;min-width:0;border:1px solid var(--line);background:rgba(5,6,9,.62);padding:19px 18px;min-height:176px}
+.maker-note-card:nth-child(4),.maker-note-card:nth-child(5){grid-column:span 3}
+.maker-note-index{font:8px var(--mono);letter-spacing:.12em;color:var(--cyan)}
+.maker-note-card h3{font-size:18px;letter-spacing:-.04em;margin:16px 0 8px;color:var(--text)}
+.maker-note-card p{font-size:12px;color:#9ca7a8;line-height:1.75;margin:0}
+.store-copy-fields{margin-top:18px}
+.store-copy-panel{border-color:#35423a}
+@media(max-width:720px){
+  .maker-note-grid{grid-template-columns:1fr 1fr}
+  .maker-note-card,.maker-note-card:nth-child(4),.maker-note-card:nth-child(5){grid-column:span 1;padding:16px;min-height:0}
+  .maker-note-card:last-child{grid-column:1/-1}
+}
+@media(max-width:480px){
+  .maker-note-grid{grid-template-columns:1fr}
+  .maker-note-card,.maker-note-card:nth-child(4),.maker-note-card:nth-child(5),.maker-note-card:last-child{grid-column:1}
+}
