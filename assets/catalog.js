@@ -10,11 +10,7 @@
   const money = (value) => value === '' || value === null || value === undefined ? '' : new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(value));
   const cleanImage = (name) => {
     const value = String(name || '');
-    const inboxPrefix = 'photos-to-add/';
-    if (value.startsWith(inboxPrefix) && value.indexOf('/', inboxPrefix.length) === -1) {
-      return `./photos-to-add/${encodeURIComponent(value.slice(inboxPrefix.length))}`;
-    }
-    return `./assets/products/${encodeURIComponent(value)}`;
+    return `./assets/products/${encodeURIComponent(value.replace(/^.*\//, ''))}`;
   };
   let allItems = [];
   let activeType = 'all';
@@ -85,7 +81,7 @@
   }
 
   function renderItems() {
-    const visible = allItems.filter((item) => ['available', 'preview'].includes(item.status) && item.published !== false && (activeType === 'all' || item.type === activeType));
+    const visible = allItems.filter((item) => item.status === 'available' && item.published === true && (activeType === 'all' || item.type === activeType));
     grid.innerHTML = '';
     visible.forEach((item) => grid.append(itemCard(item)));
     count.textContent = `${visible.length} ${visible.length === 1 ? 'ITEM' : 'ITEMS'}`;
