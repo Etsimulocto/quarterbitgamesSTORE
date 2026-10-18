@@ -112,3 +112,6 @@
   .maker-note-grid{grid-template-columns:1fr}
   .maker-note-card,.maker-note-card:nth-child(4),.maker-note-card:nth-child(5),.maker-note-card:last-child{grid-column:1}
 }
+
+/* Storefront safety: hide legacy admin HUD controls. */
+.hud .hud-admin { display: none !important; }
