@@ -114,4 +114,7 @@
 }
 
 /* Storefront safety: hide legacy admin HUD controls. */
+.hud .hud-admin,
+.hud a[href*="admin"],
+.hud button[data-admin] { display: none !important; }
 .hud .hud-admin { display: none !important; }
